@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AngularJS</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.js" ></script>
+    <script type="text/javascript" src="likes.js"></script>
+</head>
+<body ng-app="app">
+    <div ng-controller="likeController">
+        <table>
+            <tr>
+                <th>tech</th>
+                <th>likesCount</th>
+                <th>like</th>
+                <th>dislike</th>
+            </tr>
+            <tr ng-repeat="tech in techList">
+                <td>{{ tech.name }}</td>
+                <td>{{ tech.likesCount }}</td>
+                <td><button ng-click="incLike(tech)">+1</button></td>
+                <td><button ng-click="decLike(tech)">-1</button></td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
