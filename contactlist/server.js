@@ -1,28 +1,53 @@
 var express = require('express');
 var app = express();
 
-var contactList = [
-    {
-        name: "Mihir",
-        email: "email1@gmail.com",
-        number: "(123)-123456"
-    },
-    {
-        name: "Prutha",
-        email: "email2@gmail.com",
-        number: "(213)-123456"
-    },
-    {
-        name: "Dhruv",
-        email: "email3@gmail.com",
-        number: "(312)-123456"
-    }
-];
+var mongojs = require('mongojs');
+var db = mongojs('mongodb://127.0.0.1:27017/contactlist',['contactlist'])
 
-app.get('/api/contacts', (req, res) => {
-    res.json(contactList);
+app.use(express.json())
+
+
+app.get('/contacts', (req, res) => {
+    db.contacts.find(function(err, docs){
+        res.json(docs);
+    })
+
 });
 
+
+app.post('/contacts', (req, res) => {
+    db.contacts.insert(req.body, function(err, doc){
+        res.json(doc);
+    })
+});
+
+app.delete('/contacts/:id', (req, res)=>{
+    let id = req.params.id;
+    db.contacts.remove({_id: mongojs.ObjectID(id)}, function(err, doc){
+        res.json(doc);
+    })
+});
+
+app.get('/contacts/:id', (req, res) => {
+    let id = req.params.id;
+    db.contacts.findOne({_id: mongojs.ObjectID(id)}, function(err, doc){
+        res.json(doc);
+    })
+});
+
+app.put('/contacts/:id', (req, res) =>{
+    let id = req.params.id;
+    db.contacts.findAndModify({
+        query: {_id: mongojs.ObjectID(id)},
+        update: {$set: {
+            name: req.body.name,
+            email: req.body.email,
+            number: req.body.number
+        }},
+        new: true}, function (err, doc){
+            res.json(doc);
+        })
+})
 app.use(express.static(__dirname+"/public"))
 
 app.listen(3000);

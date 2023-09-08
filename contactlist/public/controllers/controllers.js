@@ -1,28 +1,55 @@
 function AppCtrl($scope, $http){
 
-    $http.get('/api/contacts')
+    var refresh = ()=> $http.get('/contacts')
         .then(function(response) {
             $scope.contactList = response.data;
+            $scope.deselect();
         })
         .catch(function(error) {
             console.error("Error" + error);
         });
 
-    person1 = {
-        name: "Mihir",
-        email: "email1@gmail.com",
-        number: "(123)-123456"
-    };
-    person2 = {
-        name: "Prutha",
-        email: "email2@gmail.com",
-        number: "(213)-123456"
-    };
-    person3 = {
-        name: "Dhruv",
-        email: "email3@gmail.com",
-        number: "(312)-123456"
-    };
-    var contactList = [person1, person2, person3];
-    $scope.contactList = contactList;
+    refresh();
+
+    $scope.addContact = ()=>{
+        $http.post('/contacts', $scope.contact).success(function(response){
+            refresh();
+
+        })
+    }
+
+    $scope.remove = (id)=>{
+        $http.delete('/contacts/'+ id).success(function(response){
+            refresh();
+        })
+    }
+
+    $scope.edit = (id)=>{
+        $http.get('/contacts/'+ id).success(function(response){
+            $scope.c = response;
+        })
+    }
+
+    $scope.update = (id)=>{
+        $http.put('/contacts/'+ id, $scope.c).success(function(response){
+            refresh();
+        })
+    }
+
+    $scope.deselect = ()=>{
+
+         $scope.contact = {
+            name: '',
+            email: '',
+            number: ''
+        };
+         $scope.contactForm.$setPristine();
+         angular.forEach($scope.contactForm, function(field, fieldName) {
+            if (fieldName.charAt(0) !== '$' && field.$touched) {
+                field.$touched = false;
+            }
+        });
+
+    }
+    
 }
