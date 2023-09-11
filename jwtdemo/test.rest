@@ -1,0 +1,17 @@
+GET http://localhost:3001/posts
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSmltIiwiaWF0IjoxNjk0NDYwNjUwLCJleHAiOjE2OTQ0NjA3MTB9.B9wUOgwPnZ0LfzpI4oovCBVKapJvr_nnkRHp84GilTg
+###
+POST http://localhost:4001/login
+Content-Type: application/json
+
+{
+    "username": "Jim"
+}
+
+###
+POST http://localhost:4001/token
+Content-Type: application/json
+
+{
+    "token": ""
+}

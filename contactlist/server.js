@@ -6,14 +6,12 @@ var db = mongojs('mongodb://127.0.0.1:27017/contactlist',['contactlist'])
 
 app.use(express.json())
 
-
 app.get('/contacts', (req, res) => {
     db.contacts.find(function(err, docs){
         res.json(docs);
     })
 
 });
-
 
 app.post('/contacts', (req, res) => {
     db.contacts.insert(req.body, function(err, doc){
@@ -48,6 +46,9 @@ app.put('/contacts/:id', (req, res) =>{
             res.json(doc);
         })
 })
+
 app.use(express.static(__dirname+"/public"))
 
 app.listen(3000);
+
+console.log("Server is running on http://localhost:3000/");
