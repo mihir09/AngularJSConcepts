@@ -6,7 +6,7 @@ h1:not(:first-child) {
     margin-top: 50px;
 }
 
-#heatmap1 {
+.grid {
     width: 600px;
     height: 150px;
     background-color: #f7f7f7;
