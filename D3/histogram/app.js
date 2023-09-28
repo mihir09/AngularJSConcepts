@@ -1,9 +1,8 @@
 async function draw() {
   // Data
   const dataset = await d3.json('data.json')
-  // console.log(dataset)
-  const xAccessor = d => d.currently.humidity
-  const yAccessor = d => d.length
+
+
 
   // Dimensions
   let dimensions = {
@@ -21,70 +20,121 @@ async function draw() {
     .attr("width", dimensions.width)
     .attr("height", dimensions.height)
 
-  // g
-  const ctr = svg.append("g")
+  const ctr = svg.append("g") // <g>
     .attr(
       "transform",
       `translate(${dimensions.margins}, ${dimensions.margins})`
     )
 
-  // Scales
-  const xScale = d3.scaleLinear()
-    .domain(d3.extent(dataset, xAccessor))
-    .range([0, dimensions.ctrWidth])
-    .nice()
+  // console.log({original:dataset, new: newDataset})
+  const labelsGroup = ctr.append('g')
+    .classed('bar-labels', true)
 
-  const bin = d3.bin()
-                .domain(xScale.domain())
-                .value(xAccessor)
-                .thresholds(10)
-  
-  const newDataset = bin(dataset)
-  const padding = 1
-
-  const yScale = d3.scaleLinear()
-                    .domain([0, d3.max(newDataset,yAccessor)])
-                    .range([dimensions.ctrHeight, 0])
-                    .nice()
-
-  // console.log({original: dataset, new: newDataset})
-
-  ctr.selectAll('rect')
-      .data(newDataset)
-      .join('rect')
-      .attr('width', d=> d3.max([0, xScale(d.x1) -xScale(d.x0)-padding]))
-      .attr('height',d => dimensions.ctrHeight - yScale(yAccessor(d)))
-      .attr('x', d => xScale(d.x0))
-      .attr('y', d=> yScale(yAccessor(d)))
-      .attr('fill', '#01c5c4')
-  
-  const xAxis = d3.axisBottom(xScale)
 
   const xAxisGroup = ctr.append('g')
-                        .style('transform', `translate(0, ${dimensions.ctrHeight}px)` )
+    .style('transform', `translateY(${dimensions.ctrHeight}px)`)
 
-  xAxisGroup.call(xAxis)
 
-  const yAxis = d3.axisLeft(yScale);
-  const yAxisGroup = ctr.append('g');
-  yAxisGroup.call(yAxis);
+  const meanLine = ctr.append('line')
+    .classed('mean-line', true)
 
-  svg.append("text")
-  .attr("class", "x-axis-label")
-  .attr("x", dimensions.width / 2)
-  .attr("y", dimensions.height - 10)
-  .style("text-anchor", "middle")
-  .text("Humidity");
+  function histogram(metric) {
+    const xAccessor = d => d.currently[metric]
+    const yAccessor = d => d.length
 
-  svg.append("text")
-    .attr("class", "y-axis-label")
-    .attr("x", -(dimensions.height / 2))
-    .attr("y", dimensions.margins - 30)
-    .attr("transform", "rotate(-90)")
-    .style("text-anchor", "middle")
-    .text("Frequency");
+    //Scales
+    const xScale = d3.scaleLinear()
+      .domain(d3.extent(dataset, xAccessor))
+      .range([0, dimensions.ctrWidth])
+      .nice()
 
-  
+    const bin = d3.bin()
+      .domain(xScale.domain())
+      .value(xAccessor)
+      .thresholds(10)
+
+    const newDataset = bin(dataset)
+    const padding = 1
+
+    console.log(newDataset)
+
+    const yScale = d3.scaleLinear()
+      .domain([0, d3.max(newDataset, yAccessor)])
+      .range([dimensions.ctrHeight, 0])
+      .nice()
+
+    const exitTransition = d3.transition().duration(1000)
+    const updateTransition = exitTransition.transition().duration(1000)
+
+    //Bars
+    const temp = ctr.selectAll('rect')
+      .data(newDataset)
+      .join(
+        (enter) => enter.append('rect')
+          .attr('width', d => d3.max([0, xScale(d.x1) - xScale(d.x0) - padding]))
+          .attr('height', 0)
+          .attr('x', d => xScale(d.x0))
+          .attr('y', d => dimensions.ctrHeight)
+          .attr('fill', '#b8de6f'),
+        (update) => update,
+        (exit) => exit.attr('fill', '#f39233')
+          .transition(exitTransition)
+          .attr('y', d => dimensions.ctrHeight)
+          .attr('height', 0)
+          .remove()
+
+      )
+      .transition(updateTransition)
+      .attr('width', d => d3.max([0, xScale(d.x1) - xScale(d.x0) - padding]))
+      .attr('height', d => dimensions.ctrHeight - yScale(yAccessor(d)))
+      .attr('x', d => xScale(d.x0))
+      .attr('y', d => yScale(yAccessor(d)))
+      .attr('fill', '#01c5c4')
+
+
+    labelsGroup.selectAll('text')
+      .data(newDataset)
+      .join(
+        (enter) => enter.append('text')
+          .attr('x', d => xScale(d.x0) + (xScale(d.x1) - xScale(d.x0)) / 2)
+          .attr('y', d => dimensions.ctrHeight)
+          .text(yAccessor),
+        (update) => update,
+        (exit) => exit.transition(exitTransition)
+          .attr('y', dimensions.ctrHeight)
+          .remove()
+
+      )
+      .transition(updateTransition)
+      .attr('x', d => xScale(d.x0) + (xScale(d.x1) - xScale(d.x0)) / 2)
+      .attr('y', d => yScale(yAccessor(d)) - 10)
+      .text(yAccessor)
+
+
+
+    //Mean
+    const mean = d3.mean(dataset, xAccessor)
+    meanLine.raise()
+      .transition(updateTransition)
+      .attr('x1', xScale(mean))
+      .attr('y1', 0)
+      .attr('x2', xScale(mean))
+      .attr('y2', dimensions.ctrHeight)
+    //Axis
+    const xAxis = d3.axisBottom(xScale)
+    xAxisGroup.transition().call(xAxis)
+
+  }
+
+  //Events
+  d3.select("#metric").on("change", function (e) {
+    e.preventDefault()
+    console.log(this)
+    histogram(this.value)
+  })
+
+  histogram('humidity')
+
 }
 
 draw()
