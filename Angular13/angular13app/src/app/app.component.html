@@ -1,14 +1,19 @@
 <div class="container">
-  <h1 class="bg-primary"></h1>
-    <hr>
-    <h4>Name: {{name}}</h4>
-    <h4>{{2+2}}</h4>
-    <h4>{{name.length}}</h4>
-
-    <input type="text" [id]="EmpID" value="name">
-    <input [disabled]=enabled type="text" [id]="EmpID" value="name">
-
-    <app-bindings></app-bindings>
-
-    <app-events></app-events>
+  <!-- <h1 class="bg-primary">The Demo App</h1>
+  <hr>
+  <h4>NAME: {{name}}</h4>
+  <h4>{{2+2}}</h4>
+  <h4>{{name.length}}</h4>
+  <h4>{{name.toLocaleUpperCase()}}</h4>
+  <hr>
+  <input type="text" [id]="EmpID" value="John Smith">
+  <input [disabled]="disabled" type="text" id="{{EmpID}}" value={{disabled}}> -->
+  <!-- it seems like interpolation ends up converting it to string -->
+  <!-- <hr> -->
+  <!-- <app-bindings></app-bindings> -->
+  <!-- <app-events></app-events> -->
+  <!-- <app-twoway></app-twoway> -->
+  <!-- <app-direcives (childEvent)="num=$event" [childnumbers]="numbers"></app-direcives>
+  <h2>Value from Chils:{{num}}</h2> -->
+  <app-pipes></app-pipes>
 </div>

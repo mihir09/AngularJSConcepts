@@ -1,11 +1,9 @@
 .text-success{
-    color: green;
+    color:green;
 }
-
-.text-warning{
-    color: red
-}
-
 .text-danger{
-    font-style: italic;
+    color:red;
+}
+.text-special{
+    font-style:italic;
 }

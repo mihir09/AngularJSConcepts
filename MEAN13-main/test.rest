@@ -1,0 +1,10 @@
+POST http://localhost:3000/api/video
+Content-Type: application/json
+
+{
+    "title":"미니케익",
+    "url":"https://www.youtube.com/embed/b0QpT3tORJU",
+    "description":"https://www.youtube.com/watch?v=b0QpT3tORJU"
+}
+
+GET http://localhost:3000/api/videos

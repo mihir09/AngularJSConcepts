@@ -1,4 +1,13 @@
-<p>bindings works!</p>
+<h2 class="text-success">Binding Demos</h2>
+<h2 [class]="successClass">Binding Demos</h2>
+<h2  [class]="successClass" class="text-special">Binding Demos</h2>
+<h2 [class.text-danger]="hasError">Binding Demos</h2>
 
-<h2 [class]="successClass">Binding</h2>
-<h2 [class.text-warning]="hasError">Binding</h2>
+<h2 [ngClass]="messageClass">Binding Demos</h2>
+<hr>
+
+<h2 [style.color]="'gold'">Binding Demos</h2>
+<h2 [style.font-style]="'italic'">Binding Demos</h2>
+<h2 [style.color]="hasError ? 'gold' : 'blue'">Binding Demos</h2>
+<h2 [style.color]="bgColor">Binding Demos</h2>
+<h2 [ngStyle]="titleStyle">Binding Demos</h2>

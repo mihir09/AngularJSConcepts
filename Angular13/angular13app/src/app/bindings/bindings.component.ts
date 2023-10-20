@@ -6,8 +6,18 @@ import { Component } from '@angular/core';
   styleUrls: ['./bindings.component.css']
 })
 export class BindingsComponent {
-  successClass = "text-success"
-  
-  hasError = false
-  // hasError = true
+  public successClass = "text-success"
+  public hasError = false
+  public isSpecial = true
+  public bgColor = "purple"
+
+  public messageClass = {
+    "text-success": !this.hasError,
+    "text-danger": this.hasError,
+    "text-special": this.isSpecial
+  }
+  public titleStyle = {
+    color: "blue",
+    fontStyle:"italic"
+  }
 }

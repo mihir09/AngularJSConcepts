@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "student-management-syste-2129c": {
+      "hosting": {
+        "firebaseDemo": [
+          "student-management-syste-2129c"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "student-management-syste-2129c"
+  }
+}
